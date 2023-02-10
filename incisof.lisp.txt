@@ -1,0 +1,13 @@
+;;Calcular el término n de la serie de Fibonacci y el factorial de un número
+(defun fibonacci (n) ;defining the function
+  (cond ((= n 0) 0) ;cond= condition
+        ((= n 1) 1)
+        (t (+ (fibonacci (- n 1))
+             (fibonacci (- n 2))))))
+(PRINT fibonacci)
+
+(defun factorial (n)
+  (if (= n 0)
+      1
+      (* n (factorial (- n 1)))))
+(PRINT factorial)
