@@ -19,6 +19,18 @@ public class Functions {
         variables.put(variable, valor);
     }
 
+    public void cond(boolean test1, Runnable expresion1, boolean test2, Runnable expresion2, boolean test3, Runnable expresion3) {
+        if (test1) {
+            expresion1.run();
+        } else if (test2) {
+            expresion2.run();
+        } else if (test3) {
+            expresion3.run();
+        } else {
+            // ninguna expresión se evaluó como verdadera
+        }
+    }
+
     public String predicados(String exp){
         String resultado="";
         String exp2;
