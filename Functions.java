@@ -1,12 +1,26 @@
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Stack;
 
 public class Functions {
+    private HashMap<String, Integer> variables = new HashMap<String, Integer>();
     Addition add= new Addition();
     Division div= new Division();
     Multiplication mult = new Multiplication();
     Substraction sub= new Substraction();
+
+    public void setq(String exp) {
+        int valor;
+        exp= exp.replaceAll("[()]", "");
+        String[] tokens = exp.split("[\\s']+");
+        String variable = tokens[1];
+        valor= Integer.parseInt(tokens[2]);
+        variables.put(variable, valor);
+    }
+
     public String predicados(String exp){
-        Boolean resultado=false;
+        String resultado="";
         String exp2;
         String exp3="";
         exp= exp.replaceAll("[()]", "");
@@ -18,45 +32,46 @@ public class Functions {
         }
         switch(pred){
             case "atom":
-                resultado = atom(exp2);
+                resultado = Boolean.toString(atom(exp2));
                 break;
             case "list":
-                resultado = list(exp2);
+                resultado = list(Arrays.asList(tokens).subList(1, tokens.length).toArray());
                 break;
             case "equal":
-                resultado = equal(exp2, exp3);
+                resultado = Boolean.toString(equal(exp2, exp3));
                 break;
             case "<":
-                resultado= lessThan(Integer.parseInt(exp2), Integer.parseInt(exp3));
+                resultado= Boolean.toString(lessThan(Integer.parseInt(exp2), Integer.parseInt(exp3)));
                 break;
             case ">":
-                resultado = greaterThan(Integer.parseInt(exp2), Integer.parseInt(exp3));
+                resultado = Boolean.toString(greaterThan(Integer.parseInt(exp2), Integer.parseInt(exp3)));
                 break;
 
         }
     
-        return resultado.toString();
+        return resultado;
 
 
     }
 
-    public static boolean atom(Object obj) {
+    public static boolean atom(Object obj) {//mas o menod
         return obj instanceof Integer || obj instanceof String;
     }
 
-    public static boolean list(Object obj) {
+    public static String list(Object obj) { // Todavia no
         if (obj instanceof Pair) {
             Pair pair = (Pair) obj;
             while (pair != null) {
                 if (!(pair.cdr() instanceof Pair || pair.cdr() == null)) {
-                    return false;
+                    return "false";
                 }
                 pair = (Pair) pair.cdr();
             }
-            return true;
+            return "true";
         }
-        return false;
+        return "false";
     }
+
 
     public static boolean equal(Object obj1, Object obj2) {
         if (obj1 == obj2) {
