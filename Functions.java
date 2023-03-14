@@ -18,8 +18,14 @@ public class Functions {
         valor= Integer.parseInt(tokens[2]);
         variables.put(variable, valor);
     }
-
-    public void cond(boolean test1, Runnable expresion1, boolean test2, Runnable expresion2, boolean test3, Runnable expresion3) {
+    /* 
+    public void cond(String exp1, String exp2, String exp3) {
+        boolean test1;
+        boolean test2;
+        boolean test3;
+        Runnable expresion1;
+        Runnable expresion2;
+        Runnable expresion3;
         if (test1) {
             expresion1.run();
         } else if (test2) {
@@ -30,7 +36,7 @@ public class Functions {
             // ninguna expresión se evaluó como verdadera
         }
     }
-
+*/
     public String predicados(String exp){
         String resultado="";
         String exp2;
@@ -44,7 +50,12 @@ public class Functions {
         }
         switch(pred){
             case "atom":
-                resultado = Boolean.toString(atom(exp2));
+                if(tokens.length>=3){
+                    resultado="false";
+                }
+                else{
+                    resultado = Boolean.toString(atom(exp2));
+                }
                 break;
             case "list":
                 resultado = list(Arrays.asList(tokens).subList(1, tokens.length).toArray());
@@ -66,8 +77,11 @@ public class Functions {
 
     }
 
-    public static boolean atom(Object obj) {//mas o menod
-        return obj instanceof Integer || obj instanceof String;
+    public static boolean atom(Object objeto) {
+        if (objeto instanceof Integer || objeto instanceof Double || objeto instanceof String) {
+            return true; // Es un átomo
+        }
+        return false; // No es un átomo
     }
 
     public static String list(Object obj) { // Todavia no
