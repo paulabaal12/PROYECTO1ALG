@@ -15,7 +15,7 @@ public class Interpreter {
         while(!exp.equals("fin")){
             StringBuilder sb = new StringBuilder();
             while (count >= 0) {
-                System.out.print(">>");
+                System.out.print(">> ");
                 String line = scanner.nextLine();
                 sb.append(line);
                 for (char c : line.toCharArray()) {
