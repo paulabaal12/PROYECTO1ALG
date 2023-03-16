@@ -46,6 +46,9 @@ public class Interpreter {
             else if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")){
                 System.out.println(f.aritmetricas(exp));
             }
+            else if(pred.equals("cond")){
+                f.cond(exp);
+            }
 
         }
         

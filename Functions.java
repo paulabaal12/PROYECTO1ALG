@@ -1,8 +1,9 @@
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Functions {
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
@@ -19,25 +20,175 @@ public class Functions {
         valor= Integer.parseInt(tokens[2]);
         variables.put(variable, valor);
     }
-    /* 
-    public void cond(String exp1, String exp2, String exp3) {
-        boolean test1;
-        boolean test2;
-        boolean test3;
-        Runnable expresion1;
-        Runnable expresion2;
-        Runnable expresion3;
-        if (test1) {
-            expresion1.run();
-        } else if (test2) {
-            expresion2.run();
-        } else if (test3) {
-            expresion3.run();
-        } else {
-            // ninguna expresión se evaluó como verdadera
+    
+    public void cond(String exp) {
+        String condicion;
+        Boolean resultado1=false;
+        Boolean resultado2=false;
+        String[] tokens;
+        String[] lines = exp.split("\\n");
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String line : lines) {
+            arrayList.add(line.trim());
         }
+        ArrayList<String> arrayList2 = new ArrayList<>();
+        for(int i=1;i<arrayList.size();i++){
+            Pattern pattern = Pattern.compile("\\((.*)\\)\\s\"(.*)\"|^(T)\\s\"(.*)\"");
+            Matcher matcher = pattern.matcher(arrayList.get(i));
+            if (matcher.find()) {
+                if (matcher.group(1) != null) {
+                    arrayList2.add(matcher.group(1).trim());
+                    arrayList2.add(matcher.group(2));
+                } else if (matcher.group(3) != null) {
+                    arrayList2.add(matcher.group(3).trim());
+                    arrayList2.add(matcher.group(4));
+                }
+            }
+            else if(arrayList.get(i).startsWith("(T")){
+                int startIdx = arrayList.get(i).indexOf('"') + 1;
+                int endIdx = arrayList.get(i).lastIndexOf('"');
+                String message = arrayList.get(i).substring(startIdx, endIdx);
+                arrayList2.add("T");
+                arrayList2.add(message);
+            }
+
+        }
+        for(int j=0;j<arrayList2.size();j+=2){
+            condicion= arrayList2.get(j).replaceAll("[()]", "");
+            tokens = condicion.split("[\\s']+");
+            if(tokens[0].equals("=")||tokens[0].equals("<")||tokens[0].equals(">")){
+                if(variables.containsKey(tokens[1])){
+                    tokens[1]=variables.get(tokens[1]).toString();
+                }
+                if(variables.containsKey(tokens[2])){
+                    tokens[2]=variables.get(tokens[2]).toString();
+                }
+            }
+            else if(tokens[0].equals("and")||tokens[0].equals("or")){
+                if(variables.containsKey(tokens[1])){
+                    tokens[1]=variables.get(tokens[1]).toString();
+                }
+                if(variables.containsKey(tokens[2])){
+                    tokens[2]=variables.get(tokens[2]).toString();
+                }
+                if(variables.containsKey(tokens[3])){
+                    tokens[3]=variables.get(tokens[3]).toString();
+                }
+                if(variables.containsKey(tokens[5])){
+                    tokens[5]=variables.get(tokens[5]).toString();
+                }
+                if(variables.containsKey(tokens[6])){
+                    tokens[6]=variables.get(tokens[6]).toString();
+                }
+            }
+            else if(tokens[0].equals("not")){
+                if(variables.containsKey(tokens[1])){
+                    tokens[1]=variables.get(tokens[1]).toString();
+                }
+                if(variables.containsKey(tokens[2])){
+                    tokens[2]=variables.get(tokens[2]).toString();
+                }
+                if(variables.containsKey(tokens[3])){
+                    tokens[3]=variables.get(tokens[3]).toString();
+                }
+            }
+            
+            
+            switch(tokens[0]){
+                case "=":
+                    if(equal(tokens[1],tokens[2])){
+                        System.out.println(arrayList2.get(j+1));
+                        j=arrayList2.size();
+                    }
+                    break;
+                case ">":
+                    if(greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]))){
+                        System.out.println(arrayList2.get(j+1));
+                        j=arrayList2.size();
+                    }
+                    break;
+                case "<": 
+                    if(lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]))){
+                        System.out.println(arrayList2.get(j+1));
+                        j=arrayList2.size();
+                    }
+                    break;
+                case "and":
+                    if(tokens[1].equals("=")){
+                        resultado1=equal(tokens[2], tokens[3]);
+
+                    }
+                    else if(tokens[1].equals("<")){
+                        resultado1=lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                    }
+                    else if(tokens[1].equals(">")){
+                        resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                    }
+                    if(tokens[4].equals("=")){
+                        resultado2=equal(tokens[5], tokens[6]);
+                    }
+                    else if(tokens[4].equals("<")){
+                        resultado2= lessThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                    }
+                    else if(tokens[4].equals(">")){
+                        resultado2=greaterThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                    }
+
+                    if(resultado1==true&&resultado2==true){
+                        System.out.println(arrayList2.get(j+1));
+                        j=arrayList2.size();
+                    }
+                    break;
+                case "or":
+                    if(tokens[1].equals("=")){
+                        resultado1=equal(tokens[2], tokens[3]);
+
+                    }
+                    else if(tokens[1].equals("<")){
+                        resultado1=lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                    }
+                    else if(tokens[1].equals(">")){
+                        resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                    }
+                    if(tokens[4].equals("=")){
+                        resultado2=equal(tokens[5], tokens[6]);
+                    }
+                    else if(tokens[4].equals("<")){
+                        resultado2= lessThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                    }
+                    else if(tokens[4].equals(">")){
+                        resultado2=greaterThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                    }
+
+                    if(resultado1==true||resultado2==true){
+                        System.out.println(arrayList2.get(j+1));
+                        j=arrayList2.size();
+                    }
+                    break;
+                case "not":
+                    if(tokens[1].equals("=")){
+                        resultado1=equal(tokens[2], tokens[3]);
+
+                    }
+                    else if(tokens[1].equals("<")){
+                        resultado1=lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                    }
+                    else if(tokens[1].equals(">")){
+                        resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                    }
+                    if(resultado1==false){
+                        System.out.println(arrayList2.get(j+1));
+                        j=arrayList2.size();
+                    }
+                    break;
+                case "T":
+                    System.out.println(arrayList2.get(j+1));
+                    break;
+            }
+        }
+        
     }
-*/
+
     public String predicados(String exp){
         String resultado="";
         ArrayList<Object> lista= new ArrayList<>();
@@ -47,8 +198,14 @@ public class Functions {
         String[] tokens = exp.split("[\\s']+");
         String pred = tokens[0];
         exp2= tokens[1];
+        if(variables.containsKey(exp2)){
+            exp2=variables.get(exp2).toString();
+        }
         if( tokens.length>=3){
             exp3= tokens[2];
+            if(variables.containsKey(exp3)){
+                exp3=variables.get(exp3).toString();
+            }
         }
         if(pred.equals("list")){
             resultado="(";
@@ -145,7 +302,9 @@ public class Functions {
 
         for (int i = tokens.length - 1; i >= 0; i--) {
             String token = tokens[i];
-
+            if(variables.containsKey(token)){
+                token=variables.get(token).toString();
+            }
             if (isNumeric(token)) {
                 stack.push(Integer.parseInt(token));
             } else if(token.equals("+")||token.equals("-")||token.equals("*")||token.equals("/")||token.equals("mod")||token.equals("rem")){
