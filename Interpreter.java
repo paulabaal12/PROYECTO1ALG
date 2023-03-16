@@ -1,3 +1,4 @@
+//Paula Barillas, Ana Paula Navas, Nicolle Gordillo
 import java.util.ArrayList;
 import java.util.Scanner;
 
