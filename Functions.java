@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
@@ -39,6 +40,7 @@ public class Functions {
 */
     public String predicados(String exp){
         String resultado="";
+        ArrayList<Object> lista= new ArrayList<>();
         String exp2;
         String exp3="";
         exp= exp.replaceAll("[()]", "");
@@ -48,29 +50,40 @@ public class Functions {
         if( tokens.length>=3){
             exp3= tokens[2];
         }
-        switch(pred){
-            case "atom":
-                if(tokens.length>=3){
-                    resultado="false";
-                }
-                else{
-                    resultado = Boolean.toString(atom(exp2));
-                }
-                break;
-            case "list":
-                resultado = list(Arrays.asList(tokens).subList(1, tokens.length).toArray());
-                break;
-            case "equal":
-                resultado = Boolean.toString(equal(exp2, exp3));
-                break;
-            case "<":
-                resultado= Boolean.toString(lessThan(Integer.parseInt(exp2), Integer.parseInt(exp3)));
-                break;
-            case ">":
-                resultado = Boolean.toString(greaterThan(Integer.parseInt(exp2), Integer.parseInt(exp3)));
-                break;
+        if(pred.equals("list")){
+            resultado="(";
+            for(int i=1;i<tokens.length-1;i++){
+                resultado+=tokens[i]+" ";
+                lista.add(tokens[i]);
+
+            }
+            lista.add(tokens[tokens.length-1]);
+            resultado+=tokens[tokens.length-1]+")";
+
+        }else{
+            switch(pred){
+                case "atom":
+                    if(tokens.length>=3){
+                        resultado="false";
+                    }
+                    else{
+                        resultado = Boolean.toString(atom(exp2));
+                    }
+                    break;
+                case "equal":
+                    resultado = Boolean.toString(equal(exp2, exp3));
+                    break;
+                case "<":
+                    resultado= Boolean.toString(lessThan(Integer.parseInt(exp2), Integer.parseInt(exp3)));
+                    break;
+                case ">":
+                    resultado = Boolean.toString(greaterThan(Integer.parseInt(exp2), Integer.parseInt(exp3)));
+                    break;
+    
+            }
 
         }
+        
     
         return resultado;
 
@@ -84,19 +97,6 @@ public class Functions {
         return false; // No es un átomo
     }
 
-    public static String list(Object obj) { // Todavia no
-        if (obj instanceof Pair) {
-            Pair pair = (Pair) obj;
-            while (pair != null) {
-                if (!(pair.cdr() instanceof Pair || pair.cdr() == null)) {
-                    return "false";
-                }
-                pair = (Pair) pair.cdr();
-            }
-            return "true";
-        }
-        return "false";
-    }
 
 
     public static boolean equal(Object obj1, Object obj2) {
