@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 public class Functions {
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
@@ -367,5 +368,13 @@ public class Functions {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("js");
 
+        try{
+            String expression = function.replaceAll("x", Double.toString(parametro1)).replaceAll("y", Double.toString(parametro2));
+            Object result = engine.eval(expression);
+            System.out.println("El resultado de la funcion creada es " + result);
+        } catch (ScriptException e) {
+            System.out.println("La expresion de la funcion que creaste no es valida :()");
+        }
+        sc.close();
     }
 }
