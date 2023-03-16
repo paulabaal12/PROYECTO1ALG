@@ -1,9 +1,13 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 public class Functions {
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
@@ -345,5 +349,23 @@ public class Functions {
             return false;
         }
         return true;
+    }
+
+    public static void create_function (){
+        Scanner sc = new Scanner(System.in);
+
+
+        System.out.println("Ingresa una expresion de funcion: ");
+        String function = sc.nextLine();
+
+        System.out.println("Ingresa el valor que le daras a tu primer parametro: ");
+        double parametro1 = sc.nextDouble();
+
+        System.out.println("Ingresa el valor que le daras a tu segundo parametro: ");
+        double parametro2 = sc.nextDouble();
+
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("js");
+
     }
 }
