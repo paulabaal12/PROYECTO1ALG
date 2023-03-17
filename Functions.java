@@ -23,9 +23,9 @@ public class Functions {
 
     public void setq(String exp) {
         int valor;
-        exp= exp.replaceAll("[()]", "");//QUITAR PARENTESIS
-        // REVISA SI HAY VARIABLE Y SI ESTA SE ENCUENTRA EN EL HASHMAP DE LA VARIABLE
-        String[] tokens = exp.split("[\\s']+");
+        exp= exp.replaceAll("[()]", "");//QUITAR PARENTESIS, PARA OBTENER LOS VALORES QUE SE VA EVALUAR 
+        // REVISA SI HAY VARIABLE Y SI ESTA SE ENCUENTRA EN EL HASHMAP DE LA VARIABLE- adentro de las funciones se puede ver si hay una variable que ya fue establecida setq
+        String[] tokens = exp.split("[\\s']+"); //Obtiene el valor del hashmap
         String variable = tokens[1];
         valor= Integer.parseInt(tokens[2]);
         variables.put(variable, valor);
@@ -305,7 +305,7 @@ public class Functions {
         return false;
     }
     
-    public String aritmetricas(String exp){// Evalua 
+    public String aritmetricas(String exp){// Evalua prefix Y USO DE STACK (donde se evalua )
         Stack<Integer> stack = new Stack<Integer>();
 
         String[] tokens = exp.split("[() ]+");
@@ -333,7 +333,7 @@ public class Functions {
                     case "/":
                         stack.push(div.divide(operand1, operand2));
                         break;
-                    case "mod":
+                    case "mod": //devuelve el residuo
                         stack.push(operand1 % operand2);
                         break;
                     case "rem":
