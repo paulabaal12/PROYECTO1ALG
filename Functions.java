@@ -362,7 +362,7 @@ public class Functions {
             arrayList.add(line.trim());
         }
         for(int i=1;i<lines.length;i++){
-            sb.append(lines[i]+"\n");
+            sb.append(arrayList.get(i)+"\n");
         }
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
@@ -373,6 +373,154 @@ public class Functions {
         }
         paramfunciones.put(tokens[1], param);
     }
+    public String ifcond(String exp){
+        String condicion;
+        Boolean resultado1=false;
+        Boolean resultado2=false;
+        String[] tokens;
+        String[] lines = exp.split("\\n");
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String line : lines) {
+            arrayList.add(line.trim());
+        }
+        condicion= arrayList.get(1).replaceAll("[()]", "");
+        tokens = condicion.split("[\\s']+");
+        if(tokens[0].equals("=")||tokens[0].equals("<")||tokens[0].equals(">")){
+            if(variables.containsKey(tokens[1])){
+                tokens[1]=variables.get(tokens[1]).toString();
+            }
+            if(variables.containsKey(tokens[2])){
+                tokens[2]=variables.get(tokens[2]).toString();
+            }
+        }
+        else if(tokens[0].equals("and")||tokens[0].equals("or")){
+            if(variables.containsKey(tokens[1])){
+                tokens[1]=variables.get(tokens[1]).toString();
+            }
+            if(variables.containsKey(tokens[2])){
+                tokens[2]=variables.get(tokens[2]).toString();
+            }
+            if(variables.containsKey(tokens[3])){
+                tokens[3]=variables.get(tokens[3]).toString();
+            }
+            if(variables.containsKey(tokens[5])){
+                tokens[5]=variables.get(tokens[5]).toString();
+            }
+            if(variables.containsKey(tokens[6])){
+                tokens[6]=variables.get(tokens[6]).toString();
+            }
+        }
+        else if(tokens[0].equals("not")){
+            if(variables.containsKey(tokens[1])){
+                tokens[1]=variables.get(tokens[1]).toString();
+            }
+            if(variables.containsKey(tokens[2])){
+                tokens[2]=variables.get(tokens[2]).toString();
+            }
+            if(variables.containsKey(tokens[3])){
+                tokens[3]=variables.get(tokens[3]).toString();
+            }
+        }
+        switch(tokens[0]){
+            case "=":
+                if(equal(tokens[1],tokens[2])){
+                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                }
+                else{
+                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                }
+            case ">":
+                if(greaterThan(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))){
+                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                }
+                else{
+                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                }
+            case "<": 
+                if(lessThan(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))){
+                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                }
+                else{
+                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                }
+            case "and":
+                if(tokens[1].equals("=")){
+                    resultado1=equal(tokens[2], tokens[3]);
+
+                }
+                else if(tokens[1].equals("<")){
+                    resultado1=lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                }
+                else if(tokens[1].equals(">")){
+                    resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                }
+                if(tokens[4].equals("=")){
+                    resultado2=equal(tokens[5], tokens[6]);
+                }
+                else if(tokens[4].equals("<")){
+                    resultado2= lessThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                }
+                else if(tokens[4].equals(">")){
+                    resultado2=greaterThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                }
+
+                if(resultado1==true&&resultado2==true){
+                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    
+                }
+                else{
+                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                }
+            case "or":
+                if(tokens[1].equals("=")){
+                    resultado1=equal(tokens[2], tokens[3]);
+
+                }
+                else if(tokens[1].equals("<")){
+                    resultado1=lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                }
+                else if(tokens[1].equals(">")){
+                    resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                }
+                if(tokens[4].equals("=")){
+                    resultado2=equal(tokens[5], tokens[6]);
+                }
+                else if(tokens[4].equals("<")){
+                    resultado2= lessThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                }
+                else if(tokens[4].equals(">")){
+                    resultado2=greaterThan(Integer.parseInt(tokens[5]), Integer.parseInt(tokens[6]));
+                }
+
+                if(resultado1==true||resultado2==true){
+                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    
+                }
+                else{
+                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                }
+            case "not":
+                if(tokens[1].equals("=")){
+                    resultado1=equal(tokens[2], tokens[3]);
+
+                }
+                else if(tokens[1].equals("<")){
+                    resultado1=lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                }
+                else if(tokens[1].equals(">")){
+                    resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+                }
+                if(resultado1==false){
+                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    
+                }
+                else{
+                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                }
+            }
+            return "";
+
+    }
     public String defun(String exp){
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
@@ -381,11 +529,11 @@ public class Functions {
         expresion= expresion.replaceAll("[()]", "");
         String[] tokens2 = expresion.split("[\\s']+");
         String pred =tokens2[0];
-        
+        for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){
+            expresion2=expresion2.replaceAll("\\b" +paramfunciones.get(tokens[0]).get(i)+"\\b" , tokens[i+1]);
+        }
         if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")||pred.equals("mod")||pred.equals("rem")){
-            for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){
-                expresion2=expresion2.replaceAll(paramfunciones.get(tokens[0]).get(i), tokens[i+1]);
-            }
+            
             return aritmetricas(expresion2);
         }
         else if(pred.equals("cond")){
@@ -398,9 +546,9 @@ public class Functions {
         else{
             return "";
         }
-
-
+    
     }
+
     public String quote(String exp){
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
