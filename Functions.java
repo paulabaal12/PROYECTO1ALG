@@ -23,14 +23,15 @@ public class Functions {
 
     public void setq(String exp) {
         int valor;
-        exp= exp.replaceAll("[()]", "");
+        exp= exp.replaceAll("[()]", "");//QUITAR PARENTESIS
+        // REVISA SI HAY VARIABLE Y SI ESTA SE ENCUENTRA EN EL HASHMAP DE LA VARIABLE
         String[] tokens = exp.split("[\\s']+");
         String variable = tokens[1];
         valor= Integer.parseInt(tokens[2]);
         variables.put(variable, valor);
     }
     
-    public void cond(String exp) {
+    public void cond(String exp) {// COND, condiocnales . En donde se ve si se cumple 
         String condicion;
         Boolean resultado1=false;
         Boolean resultado2=false;
@@ -43,7 +44,7 @@ public class Functions {
         ArrayList<String> arrayList2 = new ArrayList<>();
         for(int i=1;i<arrayList.size();i++){
             Pattern pattern = Pattern.compile("\\((.*)\\)\\s\"(.*)\"|^(T)\\s\"(.*)\"");
-            Matcher matcher = pattern.matcher(arrayList.get(i));
+            Matcher matcher = pattern.matcher(arrayList.get(i)); //Cual es condicion y cual es mensaje
             if (matcher.find()) {
                 if (matcher.group(1) != null) {
                     arrayList2.add(matcher.group(1).trim());
@@ -72,7 +73,7 @@ public class Functions {
                 if(variables.containsKey(tokens[2])){
                     tokens[2]=variables.get(tokens[2]).toString();
                 }
-            }
+            }// evalua todos los 
             else if(tokens[0].equals("and")||tokens[0].equals("or")){
                 if(variables.containsKey(tokens[1])){
                     tokens[1]=variables.get(tokens[1]).toString();
@@ -190,7 +191,7 @@ public class Functions {
                         j=arrayList2.size();
                     }
                     break;
-                case "T":
+                case "T": // si no se cumple nada 
                     System.out.println(arrayList2.get(j+1));
                     break;
             }
@@ -198,7 +199,7 @@ public class Functions {
         
     }
 
-    public String predicados(String exp){
+    public String predicados(String exp){ //atom, list , ...
         String resultado="";
         ArrayList<Object> lista= new ArrayList<>();
         String exp2;
@@ -216,7 +217,7 @@ public class Functions {
                 exp3=variables.get(exp3).toString();
             }
         }
-        if(pred.equals("list")){
+        if(pred.equals("list")){ //Imprime la lista que uno declara 
             resultado="(";
             for(int i=1;i<tokens.length-1;i++){
                 resultado+=tokens[i]+" ";
@@ -228,7 +229,7 @@ public class Functions {
 
         }else{
             switch(pred){
-                case "atom":
+                case "atom": //Si es un string, etc. True y falso 
                     if(tokens.length>=3){
                         resultado="false";
                     }
@@ -236,7 +237,7 @@ public class Functions {
                         resultado = Boolean.toString(atom(exp2));
                     }
                     break;
-                case "equal":
+                case "equal": //Si son iguales, etc. 
                     resultado = Boolean.toString(equal(exp2, exp3));
                     break;
                 case "<":
@@ -304,7 +305,7 @@ public class Functions {
         return false;
     }
     
-    public String aritmetricas(String exp){
+    public String aritmetricas(String exp){// Evalua 
         Stack<Integer> stack = new Stack<Integer>();
 
         String[] tokens = exp.split("[() ]+");
@@ -526,7 +527,7 @@ public class Functions {
     String exp3="";
     String exp4="";
     String resultado="";
-    public String defun(String exp){
+    public String defun(String exp){ //Evalua la función 
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
         String expresion = funciones.get(tokens[0]);
@@ -555,7 +556,7 @@ public class Functions {
                     tokens2[tokens2list.indexOf(subexp)+k]=tokens2[tokens2list.indexOf(subexp)+k].replaceAll("\\b" +paramfunciones.get(tokens[0]).get(k)+"\\b" , tokens[k]);
                         exp3+= tokens2[tokens2list.indexOf(subexp)+k]+" ";
                     }
-                    
+                    //revisar funciones que ya sean parametros 
 
                 }
                 exp4+="))";
@@ -596,3 +597,4 @@ public class Functions {
         return tokens[1].toString();
     }
 }
+//arraylist de los parametros 
