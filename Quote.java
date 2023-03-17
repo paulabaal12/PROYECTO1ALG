@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Quote{ {
+/*strpublic class Quote{ {
     
     public Quote (ArrayList<String> expression){
             for (String str : expression) {
@@ -10,3 +10,4 @@ public class Quote{ {
     
     }
 }
+*/
