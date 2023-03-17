@@ -11,6 +11,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 public class Functions {
+    public String name;
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
     Addition add= new Addition();
     Division div= new Division();
@@ -251,6 +252,16 @@ public class Functions {
 
 
     }
+    /*Pattern recursive = Pattern.compile("[(][ ]*cond[ ]*([(].+[)])[ ]*[)]",Pattern.CASE_INSENSITIVE );
+    Matcher matcherr = recursive.matcher(instructions);
+    if(matcherr.find()){
+        String conditions = matcherr.group(1);
+        Pattern cond = Pattern.compile("[ ]*[(][ ]*([(][ ]*(=|>|=>|<|<=|equal)[ ]+[a-zA-Z0-9]+[ ]+[a-zA-Z0-9]+[ ]*[)])[ ]+([(].*?[)])[ ]*[)][ ]*", Pattern.CASE_INSENSITIVE); // search for conditions
+        Matcher conditionals = cond.matcher(conditions);
+        while(conditionals.find()){
+            exits.put(conditionals.group(1) , conditionals.group(3));
+        }
+    }*/
 
     public static boolean atom(Object objeto) {
         if (objeto instanceof Integer || objeto instanceof Double || objeto instanceof String) {
@@ -299,6 +310,7 @@ public class Functions {
         }
         return false;
     }
+    
     
     public String aritmetricas(String exp){
         Stack<Integer> stack = new Stack<Integer>();
