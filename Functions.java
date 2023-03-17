@@ -393,11 +393,9 @@ public class Functions {
 
 
     }
-    private synchronized void quote(String expresion){
-        Pattern pattern = Pattern.compile("^[(][ ]*('|quote)[ ]*([(].+[)])[ ]*[)]$", Pattern.CASE_INSENSITIVE); //
-         Matcher matcher = pattern.matcher(expresion);
-        while(matcher.find()){
-            System.out.println(matcher.group(2));
-        }
+    public String quote(String exp){
+        exp= exp.replaceAll("[()]", "");
+        String[] tokens = exp.split("[\\s']+");
+        return tokens[1].toString();
     }
 }
