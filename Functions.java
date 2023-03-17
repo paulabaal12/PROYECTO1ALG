@@ -1,7 +1,6 @@
-//Paula Barillas, Ana Paula Navas, Nicolle Gordillo
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +11,9 @@ import javax.script.ScriptException;
 
 public class Functions {
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
+    public HashMap<String, String> funciones = new HashMap<String, String>();
+    private HashMap<String, ArrayList<String>> paramfunciones = new HashMap<String, ArrayList<String>>();
+    
     Addition add= new Addition();
     Division div= new Division();
     Multiplication mult = new Multiplication();
@@ -351,38 +353,47 @@ public class Functions {
         }
         return true;
     }
-
-    public static void create_function (){
-        Scanner sc = new Scanner(System.in);
-
-
-        System.out.println("Ingresa una expresion de funcion: ");
-        String function = sc.nextLine();
-
-        System.out.println("Ingresa el valor que le daras a tu primer parametro: ");
-        double parametro1 = sc.nextDouble();
-
-        System.out.println("Ingresa el valor que le daras a tu segundo parametro: ");
-        double parametro2 = sc.nextDouble();
-
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("js");
-
-        try{
-            String expression = function.replaceAll("x", Double.toString(parametro1)).replaceAll("y", Double.toString(parametro2));
-            Object result = engine.eval(expression);
-            System.out.println("El resultado de la funcion creada es " + result);
-        } catch (ScriptException e) {
-            System.out.println("La expresion de la funcion que creaste no es valida :()");
+    public void create_function (String exp){
+        ArrayList<String> param = new ArrayList<>();
+        String[] lines = exp.split("\\n");
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (String line : lines) {
+            arrayList.add(line.trim());
         }
-        sc.close();
+        exp= exp.replaceAll("[()]", "");
+        String[] tokens = exp.split("[\\s']+");
+        String[] tokens2 =arrayList.get(0).replaceAll("[()]", "").split("[\\s']+");
+        funciones.put(tokens[1], arrayList.get(1));
+        for(int i=2;i<tokens2.length;i++){
+            param.add(tokens2[i]);
+        }
+        paramfunciones.put(tokens[1], param);
     }
+    public String defun(String exp){
+        exp= exp.replaceAll("[()]", "");
+        String[] tokens = exp.split("[\\s']+");
+        String expresion = funciones.get(tokens[0]);
+        String expresion2 = funciones.get(tokens[0]);
+        expresion= expresion.replaceAll("[()]", "");
+        String[] tokens2 = expresion.split("[\\s']+");
+        String pred =tokens2[0];
+        for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){
+            expresion2=expresion2.replaceAll(paramfunciones.get(tokens[0]).get(i), tokens[i+1]);
+        }
+        if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")){
+            return aritmetricas(expresion2);
+        }
+        else{
+            return "";
+        }
 
+
+    }
     private synchronized void quote(String expresion){
         Pattern pattern = Pattern.compile("^[(][ ]*('|quote)[ ]*([(].+[)])[ ]*[)]$", Pattern.CASE_INSENSITIVE); //
          Matcher matcher = pattern.matcher(expresion);
         while(matcher.find()){
             System.out.println(matcher.group(2));
         }
-}
+    }
 }
