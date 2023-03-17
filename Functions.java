@@ -109,13 +109,13 @@ public class Functions {
                     }
                     break;
                 case ">":
-                    if(greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]))){
+                    if(greaterThan(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))){
                         System.out.println(arrayList2.get(j+1));
                         j=arrayList2.size();
                     }
                     break;
                 case "<": 
-                    if(lessThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]))){
+                    if(lessThan(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))){
                         System.out.println(arrayList2.get(j+1));
                         j=arrayList2.size();
                     }
@@ -362,7 +362,7 @@ public class Functions {
             arrayList.add(line.trim());
         }
         for(int i=1;i<lines.length;i++){
-            sb.append(lines[i]);
+            sb.append(lines[i]+"\n");
         }
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
@@ -381,11 +381,19 @@ public class Functions {
         expresion= expresion.replaceAll("[()]", "");
         String[] tokens2 = expresion.split("[\\s']+");
         String pred =tokens2[0];
-        for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){
-            expresion2=expresion2.replaceAll(paramfunciones.get(tokens[0]).get(i), tokens[i+1]);
-        }
-        if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")){
+        
+        if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")||pred.equals("mod")||pred.equals("rem")){
+            for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){
+                expresion2=expresion2.replaceAll(paramfunciones.get(tokens[0]).get(i), tokens[i+1]);
+            }
             return aritmetricas(expresion2);
+        }
+        else if(pred.equals("cond")){
+            cond(expresion2);
+            return "";
+        }
+        else if(pred.equals("atom")||pred.equals("list")||pred.equals("equal")||pred.equals("<")||pred.equals(">")){
+            return predicados(expresion2);
         }
         else{
             return "";
