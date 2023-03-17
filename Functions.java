@@ -10,7 +10,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 public class Functions {
-    public String name;
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
     public HashMap<String, String> funciones = new HashMap<String, String>();
     private HashMap<String, ArrayList<String>> paramfunciones = new HashMap<String, ArrayList<String>>();
@@ -254,16 +253,6 @@ public class Functions {
 
 
     }
-    /*Pattern recursive = Pattern.compile("[(][ ]*cond[ ]*([(].+[)])[ ]*[)]",Pattern.CASE_INSENSITIVE );
-    Matcher matcherr = recursive.matcher(instructions);
-    if(matcherr.find()){
-        String conditions = matcherr.group(1);
-        Pattern cond = Pattern.compile("[ ]*[(][ ]*([(][ ]*(=|>|=>|<|<=|equal)[ ]+[a-zA-Z0-9]+[ ]+[a-zA-Z0-9]+[ ]*[)])[ ]+([(].*?[)])[ ]*[)][ ]*", Pattern.CASE_INSENSITIVE); // search for conditions
-        Matcher conditionals = cond.matcher(conditions);
-        while(conditionals.find()){
-            exits.put(conditionals.group(1) , conditionals.group(3));
-        }
-    }*/
 
     public static boolean atom(Object objeto) {
         if (objeto instanceof Integer || objeto instanceof Double || objeto instanceof String) {
@@ -312,7 +301,6 @@ public class Functions {
         }
         return false;
     }
-    
     
     public String aritmetricas(String exp){
         Stack<Integer> stack = new Stack<Integer>();
@@ -366,16 +354,20 @@ public class Functions {
         return true;
     }
     public void create_function (String exp){
+        StringBuilder sb = new StringBuilder();
         ArrayList<String> param = new ArrayList<>();
         String[] lines = exp.split("\\n");
         ArrayList<String> arrayList = new ArrayList<>();
         for (String line : lines) {
             arrayList.add(line.trim());
         }
+        for(int i=1;i<lines.length;i++){
+            sb.append(lines[i]);
+        }
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
         String[] tokens2 =arrayList.get(0).replaceAll("[()]", "").split("[\\s']+");
-        funciones.put(tokens[1], arrayList.get(1));
+        funciones.put(tokens[1], sb.toString());
         for(int i=2;i<tokens2.length;i++){
             param.add(tokens2[i]);
         }
