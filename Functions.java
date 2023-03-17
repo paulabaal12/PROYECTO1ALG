@@ -1,9 +1,11 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.List;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -521,6 +523,9 @@ public class Functions {
             return "";
 
     }
+    String exp3="";
+    String exp4="";
+    String resultado="";
     public String defun(String exp){
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
@@ -528,10 +533,46 @@ public class Functions {
         String expresion2 = funciones.get(tokens[0]);
         expresion= expresion.replaceAll("[()]", "");
         String[] tokens2 = expresion.split("[\\s']+");
+        List<String> tokens2list =  Arrays.asList(tokens2);
         String pred =tokens2[0];
+        ArrayList<String> parame= new ArrayList<>();
+        ArrayList<String> paramenew= new ArrayList<>();
+        for(int j=0; j<paramfunciones.get(tokens[0]).size();j++){
+            if(funciones.containsKey(paramfunciones.get(tokens[0]).get(j))){
+                parame= paramfunciones.get(tokens[0]);
+                String subexp=paramfunciones.get(tokens[0]).get(j);
+                exp4="("+subexp+" (";
+                exp3="("+subexp+" (";
+                for(int k =1;k<paramfunciones.get(subexp).size()+1;k++){
+                    
+                    if(k==paramfunciones.get(subexp).size()){
+                        exp4+= tokens2[tokens2list.indexOf(subexp)+k];
+                    tokens2[tokens2list.indexOf(subexp)+k]=tokens2[tokens2list.indexOf(subexp)+k].replaceAll("\\b" +paramfunciones.get(tokens[0]).get(k)+"\\b" , tokens[k]);
+                        exp3+= tokens2[tokens2list.indexOf(subexp)+k];
+                    }
+                    else{
+                        exp4+= tokens2[tokens2list.indexOf(subexp)+k]+" ";
+                    tokens2[tokens2list.indexOf(subexp)+k]=tokens2[tokens2list.indexOf(subexp)+k].replaceAll("\\b" +paramfunciones.get(tokens[0]).get(k)+"\\b" , tokens[k]);
+                        exp3+= tokens2[tokens2list.indexOf(subexp)+k]+" ";
+                    }
+                    
+
+                }
+                exp4+="))";
+                exp3+="))";
+                resultado =defun(exp3);
+                paramenew=parame;
+                paramenew.remove(subexp);
+                paramfunciones.replace(subexp, parame,paramenew);
+                
+                
+            }
+        }
+        expresion2=expresion2.replaceAll("\\Q" + exp4 + "\\E",resultado );
         for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){
             expresion2=expresion2.replaceAll("\\b" +paramfunciones.get(tokens[0]).get(i)+"\\b" , tokens[i+1]);
         }
+        
         if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")||pred.equals("mod")||pred.equals("rem")){
             
             return aritmetricas(expresion2);
