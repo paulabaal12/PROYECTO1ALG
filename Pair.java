@@ -8,10 +8,18 @@ public class Pair {
         this.cdr = cdr;
     }
 
+    
+    /** 
+     * @return Object
+     */
     public Object car() {
         return car;
     }
 
+    
+    /** 
+     * @return Object
+     */
     public Object cdr() {
         return cdr;
     }
