@@ -7,6 +7,10 @@ public class Variable<T> {
         this.content = content;
         this.name = name;
     }
+    
+    /** 
+     * @return Class
+     */
     /*
     regresa el tipo del valor contenido
     */
@@ -14,6 +18,10 @@ public class Variable<T> {
         return content.getClass();
     
     }
+    
+    /** 
+     * @return T
+     */
     public T getValue(){
         return content;
     }
