@@ -7,10 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.List;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
 public class Functions {
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
     public HashMap<String, String> funciones = new HashMap<String, String>();
@@ -21,6 +17,10 @@ public class Functions {
     Multiplication mult = new Multiplication();
     Substraction sub= new Substraction();
 
+    
+    /** 
+     * @param exp
+     */
     public void setq(String exp) {
         int valor;
         exp= exp.replaceAll("[()]", "");//QUITAR PARENTESIS
@@ -31,6 +31,10 @@ public class Functions {
         variables.put(variable, valor);
     }
     
+    
+    /** 
+     * @param lines
+     */
     public void cond(String exp) {// COND, condiocnales . En donde se ve si se cumple 
         String condicion;
         Boolean resultado1=false;
@@ -199,6 +203,12 @@ public class Functions {
         
     }
 
+    
+    /** 
+     * @param exp.replaceAll("[()]"
+     * @param tokens[1];if(variables.containsKey(exp2)
+     * @return String
+     */
     public String predicados(String exp){ //atom, list , ...
         String resultado="";
         ArrayList<Object> lista= new ArrayList<>();
@@ -257,6 +267,11 @@ public class Functions {
 
     }
 
+    
+    /** 
+     * @param objeto
+     * @return boolean
+     */
     public static boolean atom(Object objeto) {
         if (objeto instanceof Integer || objeto instanceof Double || objeto instanceof String) {
             return true; // Es un átomo
@@ -291,6 +306,12 @@ public class Functions {
         return false;
     }
 
+    
+    /** 
+     * @param obj1
+     * @param obj2
+     * @return boolean
+     */
     public static boolean lessThan(Object obj1, Object obj2) {
         if (obj1 instanceof Integer && obj2 instanceof Integer) {
             return ((Integer) obj1) < ((Integer) obj2);
@@ -298,6 +319,12 @@ public class Functions {
         return false;
     }
 
+    
+    /** 
+     * @param obj1
+     * @param obj2
+     * @return boolean
+     */
     public static boolean greaterThan(Object obj1, Object obj2) {
         if (obj1 instanceof Integer && obj2 instanceof Integer) {
             return ((Integer) obj1) > ((Integer) obj2);
@@ -305,6 +332,11 @@ public class Functions {
         return false;
     }
     
+    
+    /** 
+     * @param i--
+     * @return String
+     */
     public String aritmetricas(String exp){// Evalua 
         Stack<Integer> stack = new Stack<Integer>();
 
@@ -345,6 +377,11 @@ public class Functions {
 
         return stack.pop().toString();
     }
+    
+    /** 
+     * @param strNum
+     * @return boolean
+     */
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -356,6 +393,10 @@ public class Functions {
         }
         return true;
     }
+    
+    /** 
+     * @param exp
+     */
     public void create_function (String exp){
         StringBuilder sb = new StringBuilder();
         ArrayList<String> param = new ArrayList<>();
@@ -376,6 +417,11 @@ public class Functions {
         }
         paramfunciones.put(tokens[1], param);
     }
+    
+    /** 
+     * @param exp
+     * @return String
+     */
     public String ifcond(String exp){
         String condicion;
         Boolean resultado1=false;
@@ -527,6 +573,13 @@ public class Functions {
     String exp3="";
     String exp4="";
     String resultado="";
+    
+    /** 
+     * @param exp.replaceAll("[()]"
+     * @param expresion.replaceAll("[()]"
+     * @param j<paramfunciones.get(tokens[0]).size();j++
+     * @return String
+     */
     public String defun(String exp){ //Evalua la función 
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
@@ -591,6 +644,11 @@ public class Functions {
     
     }
 
+    
+    /** 
+     * @param exp
+     * @return String
+     */
     public String quote(String exp){
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
