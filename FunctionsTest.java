@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 class FunctionsTest {
 
 	@Test
+	//PRUEBA DE EQUAL
 	void pruebasequals() {
 	Functions funciones = new Functions();
 
@@ -13,13 +14,14 @@ class FunctionsTest {
 	assertEquals(true, funciones.equal(5, 5 ));
 	
 	}
-	
+	//PRUEBA DE ATOM
 	@Test
 	void pruebaatom() {
 	Functions funciones = new Functions();
 	assertEquals(true, funciones.atom(5));
 	
 	}
+	//PRUEBA DE MAYOR QUE
 	
 	@Test
 	void pruebamayorque() {
@@ -27,6 +29,7 @@ class FunctionsTest {
 	assertEquals(true , funciones.greaterThan(8, 6));
 	
 	}
+	//PRUEBA DE MENOR QUE
 	
 	@Test
 	void pruebamenorque() {
@@ -35,9 +38,12 @@ class FunctionsTest {
 	
 	}
 	
+	@Test
+	void PRUEBASUMA() {
+	Functions funciones = new Functions();
+	//assertEquals(false , funciones.aritmetricas(8, 6));
 	
-	
-	
+	}
 	
 	
 }
