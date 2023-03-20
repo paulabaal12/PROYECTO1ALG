@@ -11,13 +11,16 @@ public class Functions {
     private HashMap<String, Integer> variables = new HashMap<String, Integer>();
     public HashMap<String, String> funciones = new HashMap<String, String>();
     private HashMap<String, ArrayList<String>> paramfunciones = new HashMap<String, ArrayList<String>>();
+    private Stack<String> recursivo = new Stack<>();
     
     Addition add= new Addition();
     Division div= new Division();
     Multiplication mult = new Multiplication();
     Substraction sub= new Substraction();
-
-    public void setq(String exp) {
+    /** 
+     * @param exp
+     */
+    public void setq(String exp) {//asigna un valor a una variable insertandola en un hashmap, key:variable, Valor: valor de la variable
         int valor;
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
@@ -26,6 +29,9 @@ public class Functions {
         variables.put(variable, valor);
     }
     
+    /** 
+     * @param exp
+     */
     public void cond(String exp) {//condicional
         String condicion;
         Boolean resultado1=false;
@@ -194,7 +200,12 @@ public class Functions {
         
     }
 
-    public String predicados(String exp){//Evalua los predicados
+
+    /** 
+     * @param exp
+     * @return String
+     */
+    public String predicados(String exp){//Evalua los predicados, atom, list, equal, >, <
         String resultado="";
         ArrayList<Object> lista= new ArrayList<>();
         String exp2;
@@ -252,6 +263,11 @@ public class Functions {
 
     }
 
+
+    /** 
+     * @param objeto
+     * @return boolean
+     */
     public static boolean atom(Object objeto) {//mira si es un atomo
         if (objeto instanceof Integer || objeto instanceof Double || objeto instanceof String) {
             return true; // Es un átomo
@@ -260,7 +276,11 @@ public class Functions {
     }
 
 
-
+    /** 
+     * @param obj1
+     * @param obj2
+     * @return boolean
+     */
     public static boolean equal(Object obj1, Object obj2) {// mira si son iguales
         if (obj1 == obj2) {
             return true;
@@ -285,14 +305,22 @@ public class Functions {
         }
         return false;
     }
-
+    /** 
+     * @param obj1
+     * @param obj2
+     * @return boolean
+     */
     public static boolean lessThan(Object obj1, Object obj2) {//evalua si es menor que
         if (obj1 instanceof Integer && obj2 instanceof Integer) {
             return ((Integer) obj1) < ((Integer) obj2);
         }
         return false;
     }
-
+    /** 
+     * @param obj1
+     * @param obj2
+     * @return boolean
+     */
     public static boolean greaterThan(Object obj1, Object obj2) {//evalua si es mayor que
         if (obj1 instanceof Integer && obj2 instanceof Integer) {
             return ((Integer) obj1) > ((Integer) obj2);
@@ -300,6 +328,11 @@ public class Functions {
         return false;
     }
     
+
+    /** 
+     * @param exp
+     * @return String
+     */
     //Esta función se arregló remplazando todos los parentesis con espacios vacíos ya que antes no podia reconocer los operadores cuando estaban a la par de un parentesis porque tomaba el simbolo con todo y el parentesis
     public String aritmetricas(String exp){//Evalua funciones aritmetricas como prefix usando stack
         Stack<Integer> stack = new Stack<Integer>();
@@ -343,7 +376,12 @@ public class Functions {
 
         return stack.pop().toString();
     }
-    public static boolean isNumeric(String strNum) {
+
+    /** 
+     * @param strNum
+     * @return boolean
+     */
+    public static boolean isNumeric(String strNum) {//revisa si el string es un numero
         if (strNum == null) {
             return false;
         }
@@ -354,6 +392,10 @@ public class Functions {
         }
         return true;
     }
+
+    /** 
+     * @param exp
+     */
     public void create_function (String exp){//crea la funcion definida por el usuario
         StringBuilder sb = new StringBuilder();
         ArrayList<String> param = new ArrayList<>();
@@ -374,6 +416,11 @@ public class Functions {
         }
         paramfunciones.put(tokens[1], param);//inserta los parametros de la funcion a un hashmap, key: nombre de la funcion, valor: arraylist de los parametros
     }
+
+    /** 
+     * @param exp
+     * @return String
+     */
     public String ifcond(String exp){//if
         String condicion;
         Boolean resultado1=false;
@@ -386,6 +433,8 @@ public class Functions {
         }
         condicion= arrayList.get(1).replaceAll("[()]", "");
         tokens = condicion.split("[\\s']+");
+        String[] tokens2= arrayList.get(2).replaceAll("[()]", "").split("[\\s']+");
+        String[] tokens3= arrayList.get(3).replaceAll("[()]", "").split("[\\s']+");
         if(tokens[0].equals("=")||tokens[0].equals("<")||tokens[0].equals(">")){
             if(variables.containsKey(tokens[1])){
                 tokens[1]=variables.get(tokens[1]).toString();
@@ -422,27 +471,123 @@ public class Functions {
                 tokens[3]=variables.get(tokens[3]).toString();
             }
         }
+        boolean funcion=false;
         switch(tokens[0]){//evalua la condicional y devuelve el valor si es verdadero o falso
             case "=":
                 if(equal(tokens[1],tokens[2])){
-                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                     
+                    for(int i=0;i<tokens2.length;i++){
+                        if(funciones.containsKey(tokens2[i])){
+                            funcion=true;
+                            /* 
+                            String nuevo= aritmetricas("("+tokens2[i+1]+" "+tokens2[i+2]+" "+tokens2[i+3]+")");
+                            defun("("+tokens2[i]+" "+"("+nuevo+"))");
+                            */
+                        }
+                    }
+                    if((tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem"))&&funcion){
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
+                    else if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                        return aritmetricas(arrayList.get(2).toString());
+                    }
+                    else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
+                        return predicados(arrayList.get(2).toString());
+                    }
+                    else if(funciones.containsKey(tokens2[0])){
+                        return defun(arrayList.get(2).toString());
+                    }
+                    else{
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
                 }
                 else{
-                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                    
+                    for(int i=0;i<tokens3.length;i++){
+                        if(funciones.containsKey(tokens3[i])){
+                            funcion=true;
+                            /* 
+                            if(tokens3[i+1].equals("+")||(tokens3[i+1].equals("-"))||(tokens3[i+1].equals("/"))||(tokens3[i+1].equals("+"))){
+                                String nuevo= aritmetricas("("+tokens3[i+1]+" "+tokens3[i+2]+" "+tokens3[i+3]+")");
+                                defun("("+tokens3[i]+" "+"("+nuevo+"))");
+                                //recursivo.push(defun("("+tokens3[i]+" "+"("+nuevo+"))"));
+                            }
+                            */
+                        }
+                    }
+                    if((tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem"))&&funcion){
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
+                    else if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                        return aritmetricas(arrayList.get(3).toString());
+                    }
+                    else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
+                        return predicados(arrayList.get(3).toString());
+                    }
+                    else if(funciones.containsKey(tokens3[0])){
+                        return defun(arrayList.get(3).toString());
+                    }
+                    else{
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
                 }
             case ">":
                 if(greaterThan(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))){
-                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                        return aritmetricas(arrayList.get(2).toString());
+                    }
+                    else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
+                        return predicados(arrayList.get(2).toString());
+                    }
+                    else if(funciones.containsKey(tokens2[0])){
+                        return defun(arrayList.get(2).toString());
+                    }
+                    else{
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
                 }
                 else{
-                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                    if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                        return aritmetricas(arrayList.get(3).toString());
+                    }
+                    else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
+                        return predicados(arrayList.get(3).toString());
+                    }
+                    else if(funciones.containsKey(tokens3[0])){
+                        return defun(arrayList.get(3).toString());
+                    }
+                    else{
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
                 }
             case "<": 
                 if(lessThan(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]))){
-                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                        return aritmetricas(arrayList.get(2).toString());
+                    }
+                    else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
+                        return predicados(arrayList.get(2).toString());
+                    }
+                    else if(funciones.containsKey(tokens2[0])){
+                        return defun(arrayList.get(2).toString());
+                    }
+                    else{
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
                 }
                 else{
-                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                    if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                        return aritmetricas(arrayList.get(3).toString());
+                    }
+                    else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
+                        return predicados(arrayList.get(3).toString());
+                    }
+                    else if(funciones.containsKey(tokens3[0])){
+                        return defun(arrayList.get(3).toString());
+                    }
+                    else{
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
                 }
             case "and":
                 if(tokens[1].equals("=")){
@@ -466,11 +611,33 @@ public class Functions {
                 }
 
                 if(resultado1==true&&resultado2==true){
-                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                        return aritmetricas(arrayList.get(2).toString());
+                    }
+                    else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
+                        return predicados(arrayList.get(2).toString());
+                    }
+                    else if(funciones.containsKey(tokens2[0])){
+                        return defun(arrayList.get(2).toString());
+                    }
+                    else{
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
                     
                 }
                 else{
-                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                    if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                        return aritmetricas(arrayList.get(3).toString());
+                    }
+                    else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
+                        return predicados(arrayList.get(3).toString());
+                    }
+                    else if(funciones.containsKey(tokens3[0])){
+                        return defun(arrayList.get(3).toString());
+                    }
+                    else{
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
                 }
             case "or":
                 if(tokens[1].equals("=")){
@@ -494,11 +661,33 @@ public class Functions {
                 }
 
                 if(resultado1==true||resultado2==true){
-                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                        return aritmetricas(arrayList.get(2).toString());
+                    }
+                    else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
+                        return predicados(arrayList.get(2).toString());
+                    }
+                    else if(funciones.containsKey(tokens2[0])){
+                        return defun(arrayList.get(2).toString());
+                    }
+                    else{
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
                     
                 }
                 else{
-                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                    if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                        return aritmetricas(arrayList.get(3).toString());
+                    }
+                    else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
+                        return predicados(arrayList.get(3).toString());
+                    }
+                    else if(funciones.containsKey(tokens3[0])){
+                        return defun(arrayList.get(3).toString());
+                    }
+                    else{
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
                 }
             case "not":
                 if(tokens[1].equals("=")){
@@ -512,11 +701,33 @@ public class Functions {
                     resultado1=greaterThan(Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
                 }
                 if(resultado1==false){
-                    return arrayList.get(2).toString().replaceAll("[()]", "");
+                    if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                        return aritmetricas(arrayList.get(2).toString());
+                    }
+                    else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
+                        return predicados(arrayList.get(2).toString());
+                    }
+                    else if(funciones.containsKey(tokens2[0])){
+                        return defun(arrayList.get(2).toString());
+                    }
+                    else{
+                        return arrayList.get(2).toString().replaceAll("[()]", "");
+                    }
                     
                 }
                 else{
-                    return arrayList.get(3).toString().replaceAll("[()]", "");
+                    if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                        return aritmetricas(arrayList.get(3).toString());
+                    }
+                    else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
+                        return predicados(arrayList.get(3).toString());
+                    }
+                    else if(funciones.containsKey(tokens3[0])){
+                        return defun(arrayList.get(3).toString());
+                    }
+                    else{
+                        return arrayList.get(3).toString().replaceAll("[()]", "");
+                    }
                 }
             }
             return "";
@@ -525,7 +736,13 @@ public class Functions {
     String exp3="";
     String exp4="";
     String resultado="";
+    /** 
+     * @param exp"
+     * @return String
+     */
+
     public String defun(String exp){//evalua la funcion
+        String resultado="";
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
         String expresion = funciones.get(tokens[0]);
@@ -571,24 +788,30 @@ public class Functions {
         for(int i=0; i<paramfunciones.get(tokens[0]).size();i++){//remplaza en la expresion los valores indicados por el usuario
             expresion2=expresion2.replaceAll("\\b" +paramfunciones.get(tokens[0]).get(i)+"\\b" , tokens[i+1]);
         }
-        
         if(pred.equals("+")||pred.equals("-")||pred.equals("/")||pred.equals("*")||pred.equals("mod")||pred.equals("rem")){//en caso de que sea una expresion aritmetrica
             
-            return aritmetricas(expresion2);
+            resultado= aritmetricas(expresion2);
         }
         else if(pred.equals("cond")){//en caso de que sea una condicional
             cond(expresion2);
-            return "";
+            resultado= "";
         }
         else if(pred.equals("atom")||pred.equals("list")||pred.equals("equal")||pred.equals("<")||pred.equals(">")){//en caso de que sea un predicado
-            return predicados(expresion2);
+            resultado= predicados(expresion2);
         }
-        else{
-            return "";
+        else if(pred.equals("if")){
+            resultado= ifcond(expresion2);
         }
+        
+        return resultado;
     
     }
 
+
+    /** 
+     * @param exp
+     * @return String
+     */
     public String quote(String exp){//devuelve la expresion entrada, no el valor de la expresion
         exp= exp.replaceAll("[()]", "");
         String[] tokens = exp.split("[\\s']+");
