@@ -475,20 +475,7 @@ public class Functions {
         switch(tokens[0]){//evalua la condicional y devuelve el valor si es verdadero o falso
             case "=":
                 if(equal(tokens[1],tokens[2])){
-                     
-                    for(int i=0;i<tokens2.length;i++){
-                        if(funciones.containsKey(tokens2[i])){
-                            funcion=true;
-                            /* 
-                            String nuevo= aritmetricas("("+tokens2[i+1]+" "+tokens2[i+2]+" "+tokens2[i+3]+")");
-                            defun("("+tokens2[i]+" "+"("+nuevo+"))");
-                            */
-                        }
-                    }
-                    if((tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem"))&&funcion){
-                        return arrayList.get(2).toString().replaceAll("[()]", "");
-                    }
-                    else if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
+                    if(tokens2[0].equals("+")||tokens2[0].equals("-")||tokens2[0].equals("*")||tokens2[0].equals("/")||tokens2[0].equals("mod")||tokens2[0].equals("rem")){
                         return aritmetricas(arrayList.get(2).toString());
                     }
                     else if(tokens2[0].equals("atom")||tokens2[0].equals("list")||tokens2[0].equals("equal")||tokens2[0].equals(">")||tokens2[0].equals("<")){
@@ -503,22 +490,7 @@ public class Functions {
                 }
                 else{
                     
-                    for(int i=0;i<tokens3.length;i++){
-                        if(funciones.containsKey(tokens3[i])){
-                            funcion=true;
-                            /* 
-                            if(tokens3[i+1].equals("+")||(tokens3[i+1].equals("-"))||(tokens3[i+1].equals("/"))||(tokens3[i+1].equals("+"))){
-                                String nuevo= aritmetricas("("+tokens3[i+1]+" "+tokens3[i+2]+" "+tokens3[i+3]+")");
-                                defun("("+tokens3[i]+" "+"("+nuevo+"))");
-                                //recursivo.push(defun("("+tokens3[i]+" "+"("+nuevo+"))"));
-                            }
-                            */
-                        }
-                    }
-                    if((tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem"))&&funcion){
-                        return arrayList.get(3).toString().replaceAll("[()]", "");
-                    }
-                    else if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
+                    if(tokens3[0].equals("+")||tokens3[0].equals("-")||tokens3[0].equals("*")||tokens3[0].equals("/")||tokens3[0].equals("mod")||tokens3[0].equals("rem")){
                         return aritmetricas(arrayList.get(3).toString());
                     }
                     else if(tokens3[0].equals("atom")||tokens3[0].equals("list")||tokens3[0].equals("equal")||tokens3[0].equals(">")||tokens3[0].equals("<")){
