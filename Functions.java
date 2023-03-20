@@ -44,7 +44,7 @@ public class Functions {
         }
         ArrayList<String> arrayList2 = new ArrayList<>();
         for(int i=1;i<arrayList.size();i++){
-            Pattern pattern = Pattern.compile("\\((.*)\\)\\s\"(.*)\"|^(T)\\s\"(.*)\"");//crea un patron para la condicion y el mensaje
+        	Pattern pattern = Pattern.compile("\\((.*)\\)\\s\"(.*)\"|^(T)\\s\"(.*)\"|\\((.*)\\)\\s'(.*)'");//crea un patron para la condicion y el mensaje
             Matcher matcher = pattern.matcher(arrayList.get(i));
             if (matcher.find()) {//inserta condicion-mensaje si encuentra un match al patron
                 if (matcher.group(1) != null) {
@@ -54,10 +54,14 @@ public class Functions {
                     arrayList2.add(matcher.group(3).trim());
                     arrayList2.add(matcher.group(4));
                 }
+                else if (matcher.group(5) != null) {
+                    arrayList2.add(matcher.group(5).trim());
+                    arrayList2.add(matcher.group(6));
+                }
             }
             else if(arrayList.get(i).startsWith("(T")){//default
-                int startIdx = arrayList.get(i).indexOf('"') + 1;
-                int endIdx = arrayList.get(i).lastIndexOf('"');
+                int startIdx = arrayList.get(i).indexOf('T') + 2;
+                int endIdx = arrayList.get(i).lastIndexOf(')')-1;
                 String message = arrayList.get(i).substring(startIdx, endIdx);
                 arrayList2.add("T");
                 arrayList2.add(message);
